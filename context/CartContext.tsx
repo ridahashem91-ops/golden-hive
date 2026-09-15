@@ -24,7 +24,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     setMounted(true);
-    const savedCart = localStorage.getItem('apex_cart');
+    const savedCart = localStorage.getItem('golden_hive_cart');
     if (savedCart) {
       try {
         setCart(JSON.parse(savedCart));
@@ -36,7 +36,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (mounted) {
-      localStorage.setItem('apex_cart', JSON.stringify(cart));
+      localStorage.setItem('golden_hive_cart', JSON.stringify(cart));
     }
   }, [cart, mounted]);
 

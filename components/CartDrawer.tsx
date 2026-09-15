@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import { X, Trash2, ShoppingBag, Plus, Minus, ArrowRight, CheckCircle2, Sparkles } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
+import { recordSaleAndReduceStock } from '@/lib/firebaseSales';
 
 export default function CartDrawer() {
   const { cart, isCartOpen, setIsCartOpen, removeFromCart, updateQuantity, cartSubtotal, cartTotalCount, clearCart } = useCart();
@@ -17,13 +18,17 @@ export default function CartDrawer() {
   const freeShippingProgress = Math.min(100, (cartSubtotal / freeShippingThreshold) * 100);
   const amountNeededForFreeShipping = Math.max(0, freeShippingThreshold - cartSubtotal);
 
-  const handleCheckout = () => {
+  const handleCheckout = async () => {
     setIsCheckingOut(true);
-    setTimeout(() => {
+    try {
+      await recordSaleAndReduceStock(cart, cartSubtotal, shippingFee, tax, grandTotal);
+    } catch (e) {
+      console.error('Failed to record sale during checkout:', e);
+    } finally {
       setIsCheckingOut(false);
       setOrderComplete(true);
       clearCart();
-    }, 1500);
+    }
   };
 
   if (!isCartOpen) return null;

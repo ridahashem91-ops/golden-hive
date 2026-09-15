@@ -17,8 +17,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Apex Store | Premium Audio, Wearables & Workspace Gear",
-  description: "Discover our curated collection of high-performance wireless headphones, smartwatches, and minimalist workspace accessories.",
+  title: "Golden Hive | Artisanal Raw Honey",
+  description: "Experience nature's purest liquid gold. Sustainably sourced from pristine wildflower meadows and remote organic apiaries.",
 };
 
 export default function RootLayout({
@@ -32,6 +32,10 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white text-zinc-900 selection:bg-indigo-600 selection:text-white`}
       >
         <CartProvider>
+          {/* Promotional Delivery Bar */}
+          <div className="bg-amber-800 text-amber-50 text-[11px] sm:text-xs py-1.5 px-3 text-center font-medium tracking-wide">
+            🍯 Free delivery on all orders over $50 • Use code <span className="underline font-bold text-amber-200">GOLDEN2026</span> for 10% off
+          </div>
           <Navbar />
           <main className="min-h-screen">
             {children}

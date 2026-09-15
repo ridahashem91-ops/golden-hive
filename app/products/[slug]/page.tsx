@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import { PRODUCTS } from '@/data/products';
+import { getProducts } from '@/lib/firebaseProducts';
 import ProductDetailClient from '@/components/ProductDetailClient';
 
 interface PageProps {
@@ -8,13 +8,14 @@ interface PageProps {
 
 export default async function ProductDetailPage({ params }: PageProps) {
   const resolvedParams = await params;
-  const product = PRODUCTS.find(p => p.slug === resolvedParams.slug);
+  const products = await getProducts();
+  const product = products.find(p => p.slug === resolvedParams.slug);
 
   if (!product) {
     notFound();
   }
 
-  const relatedProducts = PRODUCTS.filter(
+  const relatedProducts = products.filter(
     p => p.category === product.category && p.id !== product.id
   ).slice(0, 4);
 
