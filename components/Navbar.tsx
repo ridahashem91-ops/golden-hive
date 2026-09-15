@@ -18,7 +18,7 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-40 bg-[#FFFDF9]/90 backdrop-blur-md border-b border-amber-900/10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-        {/* Brand Logo and Left Navigation (Home + Cart) */}
+        {/* Brand Logo and Home Link */}
         <div className="flex items-center gap-4 sm:gap-6">
           <Link href="/" className="flex items-center gap-3 group">
             <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-amber-600/20 group-hover:scale-105 transition-transform border border-amber-400/30">
@@ -30,33 +30,34 @@ export default function Navbar() {
             </div>
           </Link>
 
-          {/* Home Link & Cart Icon inline at the same level */}
-          <div className="flex items-center gap-3 pl-3 border-l border-amber-900/10">
+          <div className="pl-3 border-l border-amber-900/10">
             <Link href="/#home" className="text-sm font-semibold text-amber-950 hover:text-amber-700 transition-colors">
               Home
             </Link>
-            <button
-              onClick={() => setIsCartOpen(true)}
-              className="relative p-2 rounded-xl bg-amber-100/70 hover:bg-amber-200/80 text-amber-900 transition-colors flex items-center justify-center border border-amber-200 group"
-              aria-label="Shopping Cart"
-            >
-              <ShoppingBag className="w-4 h-4 text-amber-800 group-hover:scale-110 transition-transform" />
-              {cartTotalCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-amber-700 text-white text-[9px] font-bold w-3.5 h-3.5 rounded-full flex items-center justify-center shadow-sm">
-                  {cartTotalCount}
-                </span>
-              )}
-            </button>
           </div>
         </div>
 
-        {/* Desktop Navigation Links (Contact Us) & Mobile Menu Button */}
+        {/* Desktop Navigation Links (Contact Us), Cart Icon & Mobile Menu Button */}
         <div className="flex items-center gap-4">
           <nav className="hidden md:flex items-center">
             <Link href="/#footer" className="text-sm font-semibold text-amber-900/80 hover:text-amber-700 transition-colors">
               Contact Us
             </Link>
           </nav>
+
+          {/* Cart Icon */}
+          <button
+            onClick={() => setIsCartOpen(true)}
+            className="relative p-2 rounded-xl bg-amber-100/70 hover:bg-amber-200/80 text-amber-900 transition-colors flex items-center justify-center border border-amber-200 group"
+            aria-label="Shopping Cart"
+          >
+            <ShoppingBag className="w-4 h-4 text-amber-800 group-hover:scale-110 transition-transform" />
+            {cartTotalCount > 0 && (
+              <span className="absolute -top-1 -right-1 bg-amber-700 text-white text-[9px] font-bold w-3.5 h-3.5 rounded-full flex items-center justify-center shadow-sm">
+                {cartTotalCount}
+              </span>
+            )}
+          </button>
 
           {/* Mobile Menu Button */}
           <button

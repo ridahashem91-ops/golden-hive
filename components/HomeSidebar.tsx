@@ -21,36 +21,39 @@ export default function HomeSidebar() {
             <span className="font-serif font-bold text-lg text-amber-950">Golden Hive</span>
           </Link>
 
-          {/* Home Link & Cart Icon inline at the same level */}
-          <div className="flex items-center gap-2 pl-2 border-l border-amber-900/10">
+          <div className="pl-2 border-l border-amber-900/10">
             <Link
               href="#home"
               className="text-xs font-semibold text-amber-950 hover:text-amber-700 transition-colors"
             >
               Home
             </Link>
-            <button
-              onClick={() => setIsCartOpen(true)}
-              className="relative p-1.5 rounded-lg bg-amber-100/70 text-amber-900 hover:bg-amber-200 transition-colors flex items-center justify-center border border-amber-200 group"
-              aria-label="Shopping Cart"
-            >
-              <ShoppingBag className="w-4 h-4 text-amber-800 group-hover:scale-110 transition-transform" />
-              {cartTotalCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-amber-700 text-white text-[9px] font-bold w-3.5 h-3.5 rounded-full flex items-center justify-center shadow-sm">
-                  {cartTotalCount}
-                </span>
-              )}
-            </button>
           </div>
         </div>
 
-        <button
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="p-2 rounded-xl bg-amber-100/70 text-amber-900 hover:bg-amber-200 transition-colors border border-amber-200"
-          aria-label="Toggle Menu"
-        >
-          {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-        </button>
+        <div className="flex items-center gap-2">
+          {/* Cart Icon */}
+          <button
+            onClick={() => setIsCartOpen(true)}
+            className="relative p-1.5 rounded-lg bg-amber-100/70 text-amber-900 hover:bg-amber-200 transition-colors flex items-center justify-center border border-amber-200 group"
+            aria-label="Shopping Cart"
+          >
+            <ShoppingBag className="w-4 h-4 text-amber-800 group-hover:scale-110 transition-transform" />
+            {cartTotalCount > 0 && (
+              <span className="absolute -top-1 -right-1 bg-amber-700 text-white text-[9px] font-bold w-3.5 h-3.5 rounded-full flex items-center justify-center shadow-sm">
+                {cartTotalCount}
+              </span>
+            )}
+          </button>
+
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="p-2 rounded-xl bg-amber-100/70 text-amber-900 hover:bg-amber-200 transition-colors border border-amber-200"
+            aria-label="Toggle Menu"
+          >
+            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
+        </div>
       </header>
 
       {/* Mobile Dropdown Menu */}
