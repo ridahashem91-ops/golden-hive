@@ -83,10 +83,10 @@ export default function Footer() {
           <div>
             <h5 className="font-semibold text-amber-100 text-sm mb-4">Customer Care</h5>
             <ul className="space-y-2.5 text-sm">
-              <li><Link href="#footer" className="hover:text-amber-200 transition-colors">Order Tracking</Link></li>
-              <li><Link href="#footer" className="hover:text-amber-200 transition-colors">Shipping & Returns</Link></li>
-              <li><Link href="#footer" className="hover:text-amber-200 transition-colors">FAQ & Pairings</Link></li>
-              <li><Link href="#footer" className="hover:text-amber-200 transition-colors">Contact Beekeeper</Link></li>
+              <li><Link href="/contact" className="hover:text-amber-200 transition-colors font-medium text-amber-300">Contact Us Page</Link></li>
+              <li><a href="https://wa.me/15555555555" target="_blank" rel="noopener noreferrer" className="hover:text-amber-200 transition-colors flex items-center gap-1.5">WhatsApp Chat</a></li>
+              <li><a href="https://instagram.com/goldenhivehoney" target="_blank" rel="noopener noreferrer" className="hover:text-amber-200 transition-colors flex items-center gap-1.5">Instagram DM</a></li>
+              <li><Link href="/contact" className="hover:text-amber-200 transition-colors">FAQ & Pairings</Link></li>
             </ul>
           </div>
 

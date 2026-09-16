@@ -37,10 +37,13 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* Desktop Navigation Links (Contact Us), Cart Icon & Mobile Menu Button */}
+        {/* Desktop Navigation Links (Customer Order, Contact Us), Cart Icon & Mobile Menu Button */}
         <div className="flex items-center gap-4">
-          <nav className="hidden md:flex items-center">
-            <Link href="/#footer" className="text-sm font-semibold text-amber-900/80 hover:text-amber-700 transition-colors">
+          <nav className="hidden md:flex items-center gap-6">
+            <Link href="/order" className="text-sm font-semibold text-amber-900/80 hover:text-amber-700 transition-colors">
+              Customer Order
+            </Link>
+            <Link href="/contact" className="text-sm font-semibold text-amber-900/80 hover:text-amber-700 transition-colors">
               Contact Us
             </Link>
           </nav>
@@ -81,7 +84,21 @@ export default function Navbar() {
             Home
           </Link>
           <Link 
-            href="/#footer" 
+            href="/order" 
+            onClick={() => setMobileMenuOpen(false)}
+            className="block text-base font-semibold text-amber-900/80 hover:text-amber-700"
+          >
+            Customer Order
+          </Link>
+          <Link 
+            href="/contact" 
+            onClick={() => setMobileMenuOpen(false)}
+            className="block text-base font-semibold text-amber-900/80 hover:text-amber-700"
+          >
+            Contact Us
+          </Link>
+          <Link 
+            href="/contact" 
             onClick={() => setMobileMenuOpen(false)}
             className="block text-base font-semibold text-amber-900/80 hover:text-amber-700"
           >

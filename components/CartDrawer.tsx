@@ -18,16 +18,20 @@ export default function CartDrawer() {
   const freeShippingProgress = Math.min(100, (cartSubtotal / freeShippingThreshold) * 100);
   const amountNeededForFreeShipping = Math.max(0, freeShippingThreshold - cartSubtotal);
 
+  const [checkoutError, setCheckoutError] = useState<string | null>(null);
+
   const handleCheckout = async () => {
     setIsCheckingOut(true);
+    setCheckoutError(null);
     try {
       await recordSaleAndReduceStock(cart, cartSubtotal, shippingFee, tax, grandTotal);
-    } catch (e) {
-      console.error('Failed to record sale during checkout:', e);
-    } finally {
-      setIsCheckingOut(false);
       setOrderComplete(true);
       clearCart();
+    } catch (e: any) {
+      console.error('Failed to record sale during checkout:', e);
+      setCheckoutError(e?.message || 'Failed to complete order. Please try again.');
+    } finally {
+      setIsCheckingOut(false);
     }
   };
 
@@ -205,6 +209,12 @@ export default function CartDrawer() {
                   <span>${grandTotal.toFixed(2)}</span>
                 </div>
               </div>
+
+              {checkoutError && (
+                <div className="mb-3 p-3 bg-rose-50 border border-rose-200 text-rose-800 text-xs rounded-xl">
+                  {checkoutError}
+                </div>
+              )}
 
               <button
                 onClick={handleCheckout}

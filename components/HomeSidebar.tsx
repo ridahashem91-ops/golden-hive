@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Home as HomeIcon, Mail, ShoppingBag, Menu, X, Sparkles } from 'lucide-react';
+import { Home as HomeIcon, Mail, ShoppingBag, Menu, X, Sparkles, User } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 
 export default function HomeSidebar() {
@@ -23,7 +23,7 @@ export default function HomeSidebar() {
 
           <div className="pl-2 border-l border-amber-900/10">
             <Link
-              href="#home"
+              href="/#home"
               className="text-xs font-semibold text-amber-950 hover:text-amber-700 transition-colors"
             >
               Home
@@ -60,7 +60,15 @@ export default function HomeSidebar() {
       {mobileMenuOpen && (
         <div className="lg:hidden fixed inset-x-0 top-[61px] z-50 bg-[#FFFDF9] border-b border-amber-900/10 px-6 py-5 space-y-4 shadow-xl">
           <Link
-            href="#footer"
+            href="/order"
+            onClick={() => setMobileMenuOpen(false)}
+            className="flex items-center gap-3 text-base font-semibold text-amber-950 hover:text-amber-700 py-2"
+          >
+            <User className="w-5 h-5 text-amber-700" />
+            Customer Order
+          </Link>
+          <Link
+            href="/contact"
             onClick={() => setMobileMenuOpen(false)}
             className="flex items-center gap-3 text-base font-semibold text-amber-950 hover:text-amber-700 py-2"
           >
@@ -91,7 +99,7 @@ export default function HomeSidebar() {
             </div>
             <div className="space-y-2">
               <Link
-                href="#home"
+                href="/#home"
                 className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-semibold text-amber-950 hover:bg-amber-100/70 hover:text-amber-800 transition-all group"
               >
                 <HomeIcon className="w-4 h-4 text-amber-700 group-hover:scale-110 transition-transform" />
@@ -112,7 +120,14 @@ export default function HomeSidebar() {
               </button>
             </div>
             <Link
-              href="#footer"
+              href="/order"
+              className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-amber-900/80 hover:bg-amber-100/70 hover:text-amber-800 transition-all group"
+            >
+              <User className="w-4 h-4 text-amber-700 group-hover:scale-110 transition-transform" />
+              Customer Order
+            </Link>
+            <Link
+              href="/contact"
               className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-amber-900/80 hover:bg-amber-100/70 hover:text-amber-800 transition-all group"
             >
               <Mail className="w-4 h-4 text-amber-700 group-hover:scale-110 transition-transform" />

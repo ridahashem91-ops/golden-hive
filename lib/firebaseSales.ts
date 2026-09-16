@@ -1,5 +1,5 @@
 import { database } from './firebase';
-import { ref, get, set, update } from 'firebase/database';
+import { ref, get, update } from 'firebase/database';
 import { CartItem } from '@/data/products';
 
 export interface SaleItemSnapshot {
@@ -13,29 +13,35 @@ export interface SaleItemSnapshot {
 }
 
 export interface SaleRecord {
+  saleId: string;
   orderId: string;
-  timestamp: number;
-  date: string;
+  createdAt: number;
   customerName: string;
   customerPhone: string;
-  orderStatus: string;
+  status: string;
+  paymentStatus: string;
   purchasedItems: SaleItemSnapshot[];
   subtotal: number;
   discount: number;
   deliveryCost: number;
-  tax: number;
   grandTotal: number;
 }
 
 export async function recordSaleAndReduceStock(
   cart: CartItem[],
   subtotal: number,
-  shippingFee: number,
-  tax: number,
+  deliveryCost: number,
+  discount: number = 0,
   grandTotal: number
 ): Promise<string> {
-  const orderId = `ORD-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
-  
+  if (!cart || cart.length === 0) {
+    throw new Error('Cart is empty. Cannot record sale.');
+  }
+
+  const orderId = `ORD-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
+  const saleId = `SALE-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
+  const createdAt = Date.now();
+
   const purchasedItems: SaleItemSnapshot[] = cart.map(item => ({
     productId: item.product.id,
     productName: item.product.name,
@@ -47,43 +53,50 @@ export async function recordSaleAndReduceStock(
   }));
 
   const saleRecord: SaleRecord = {
+    saleId,
     orderId,
-    timestamp: Date.now(),
-    date: new Date().toISOString(),
+    createdAt,
     customerName: 'Valued Customer',
     customerPhone: 'N/A',
-    orderStatus: 'Completed',
+    status: 'Completed',
+    paymentStatus: 'Paid',
     purchasedItems,
     subtotal,
-    discount: 0,
-    deliveryCost: shippingFee,
-    tax,
+    discount,
+    deliveryCost,
     grandTotal
   };
 
-  try {
-    // 1. Save permanent sales record under /sales
-    const saleRef = ref(database, `sales/${orderId}`);
-    const sanitizedSale = JSON.parse(JSON.stringify(saleRecord));
-    await set(saleRef, sanitizedSale);
+  const updates: Record<string, any> = {};
 
-    // 2. Reduce corresponding product stock quantity in Firebase /products
-    for (const item of cart) {
-      const productRef = ref(database, `products/${item.product.id}`);
-      const snapshot = await get(productRef);
-      if (snapshot.exists()) {
-        const productData = snapshot.val();
-        const currentStock = typeof productData.stockQuantity === 'number' ? productData.stockQuantity : 50;
-        const newStock = Math.max(0, currentStock - item.quantity);
-        
-        await update(productRef, {
-          stockQuantity: newStock,
-          isActive: newStock > 0
-        });
+  // 1. Prepare sale record under /sales/${saleId} (and also support lookup by orderId if needed, or save under saleId)
+  updates[`sales/${saleId}`] = JSON.parse(JSON.stringify(saleRecord));
+  updates[`sales/${orderId}`] = JSON.parse(JSON.stringify(saleRecord)); // Backwards compatibility / dual reference
+
+  // 2. Fetch current stock for all products and prepare stock reduction updates
+  for (const item of cart) {
+    const productRef = ref(database, `products/${item.product.id}`);
+    const snapshot = await get(productRef);
+    
+    let currentStock = 50;
+    if (snapshot.exists()) {
+      const productData = snapshot.val();
+      if (typeof productData.stockQuantity === 'number') {
+        currentStock = productData.stockQuantity;
       }
     }
 
-    console.log(`Successfully recorded sale ${orderId} and updated product stock.`);
+    const newStock = Math.max(0, currentStock - item.quantity);
+    
+    updates[`products/${item.product.id}/stockQuantity`] = newStock;
+    updates[`products/${item.product.id}/isActive`] = newStock > 0;
+  }
+
+  // 3. Atomically execute all updates (sale creation + stock updates)
+  try {
+    const rootRef = ref(database);
+    await update(rootRef, updates);
+    console.log(`Successfully recorded sale ${saleId} (Order: ${orderId}) and updated product stock.`);
     return orderId;
   } catch (error) {
     console.error('Failed to record sale or update stock in Firebase:', error);
