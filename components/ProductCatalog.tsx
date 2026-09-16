@@ -54,7 +54,7 @@ export default function ProductCatalog({ products = PRODUCTS }: ProductCatalogPr
       {/* Main Grid Layout: Left Content (Search, Categories, Products), Right Sidebar (Hive to Jar) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* 1. Left / Main Content Area */}
-        <div className="lg:col-span-8 xl:col-span-9 space-y-8">
+        <div className="lg:col-span-7 xl:col-span-8 space-y-8">
           {/* Prominent Search Bar near top */}
           <div>
             <div className="max-w-3xl mb-6">
@@ -192,7 +192,7 @@ export default function ProductCatalog({ products = PRODUCTS }: ProductCatalogPr
         </div>
 
         {/* 2. Hive to Jar Promotional Area (Far Right Sidebar, starting from top behind search) */}
-        <div className="lg:col-span-4 xl:col-span-3 lg:sticky lg:top-28">
+        <div className="lg:col-span-5 xl:col-span-4 lg:sticky lg:top-28">
           <div className="bg-[#2C221E] text-amber-50 rounded-3xl p-6 sm:p-8 shadow-xl border border-amber-900/40 relative overflow-hidden">
             {/* Background glow */}
             <div className="absolute -top-20 -right-20 w-48 h-48 bg-amber-600/15 rounded-full blur-2xl pointer-events-none"></div>
