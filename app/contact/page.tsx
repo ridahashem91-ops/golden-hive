@@ -1,8 +1,7 @@
 'use client';
 
 import React from 'react';
-import Link from 'next/link';
-import { ArrowRight, Sparkles, User, Phone } from 'lucide-react';
+import { ArrowRight, Sparkles, Phone } from 'lucide-react';
 import HomeSidebar from '@/components/HomeSidebar';
 
 export default function ContactPage() {
@@ -12,46 +11,26 @@ export default function ContactPage() {
       <HomeSidebar />
 
       {/* Main Content */}
-      <div className="flex-1 min-w-0 flex flex-col">
+      <div className="flex-1 min-w-0 flex flex-col justify-start">
         {/* Header Banner */}
-        <div className="bg-gradient-to-b from-amber-50/70 via-[#FFFDF9] to-[#FFFDF9] py-12 lg:py-16 px-4 sm:px-6 lg:px-8 border-b border-amber-900/10">
+        <div className="bg-gradient-to-b from-amber-50/70 via-[#FFFDF9] to-[#FFFDF9] py-4 lg:py-5 px-4 sm:px-6 lg:px-8 border-b border-amber-900/10">
           <div className="max-w-4xl mx-auto text-center">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100/80 border border-amber-200 text-amber-800 text-xs font-semibold tracking-wide uppercase mb-3 shadow-xs">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100/80 border border-amber-200 text-amber-800 text-xs font-semibold tracking-wide uppercase mb-1.5 shadow-xs">
               <Sparkles className="w-3.5 h-3.5 text-amber-600" />
               <span>We're Here For You</span>
             </div>
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-extrabold tracking-tight text-amber-950 mb-4">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-serif font-extrabold tracking-tight text-amber-950 mb-1.5">
               Contact <span className="italic font-normal text-amber-600">Golden Hive</span>
             </h1>
-            <p className="text-base sm:text-lg text-amber-950/80 max-w-2xl mx-auto leading-relaxed">
-              Reach out to us directly through WhatsApp or Instagram, or place a customer order. Our team is ready to assist you!
+            <p className="text-sm sm:text-base text-amber-950/80 max-w-2xl mx-auto leading-relaxed">
+              Reach out to us directly through WhatsApp or Instagram. Our team is ready to assist you!
             </p>
           </div>
         </div>
 
         {/* Contact Options Grid */}
-        <div className="py-12 lg:py-16 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto w-full">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-            
-            {/* Customer Order Card */}
-            <div className="bg-white rounded-3xl p-8 border border-amber-200/80 shadow-lg shadow-amber-900/5 hover:border-amber-400 transition-all flex flex-col justify-between group">
-              <div>
-                <div className="w-14 h-14 rounded-2xl bg-amber-50 text-amber-700 flex items-center justify-center mb-6 border border-amber-200 group-hover:scale-110 transition-transform shadow-sm">
-                  <User className="w-7 h-7" />
-                </div>
-                <h3 className="text-xl font-serif font-bold text-amber-950 mb-2">Customer Order</h3>
-                <p className="text-sm text-amber-900/70 mb-6 leading-relaxed">
-                  Submit your custom order details directly through our customer order form for express processing.
-                </p>
-              </div>
-              <Link
-                href="/order"
-                className="inline-flex items-center justify-center gap-2 w-full py-3.5 px-6 bg-amber-600 hover:bg-amber-700 text-white font-semibold rounded-2xl transition-all shadow-md shadow-amber-600/20 text-sm"
-              >
-                <span>Go to Order Form</span>
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-            </div>
+        <div className="py-4 lg:py-6 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto w-full">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
 
             {/* WhatsApp Card */}
             <div className="bg-white rounded-3xl p-8 border border-amber-200/80 shadow-lg shadow-amber-900/5 hover:border-amber-400 transition-all flex flex-col justify-between group">
@@ -65,7 +44,7 @@ export default function ContactPage() {
                 </p>
               </div>
               <a
-                href="https://wa.me/15555555555"
+                href="https://wa.me/96171725664"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center gap-2 w-full py-3.5 px-6 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-2xl transition-all shadow-md shadow-emerald-600/20 text-sm"
@@ -89,7 +68,7 @@ export default function ContactPage() {
                 </p>
               </div>
               <a
-                href="https://instagram.com/goldenhivehoney"
+                href="https://instagram.com/propolis.lb.official"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center gap-2 w-full py-3.5 px-6 bg-gradient-to-r from-purple-600 via-pink-600 to-amber-500 hover:opacity-95 text-white font-semibold rounded-2xl transition-all shadow-md shadow-pink-600/20 text-sm"

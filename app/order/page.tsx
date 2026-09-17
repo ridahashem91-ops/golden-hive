@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { User, Phone, MapPin, ShoppingBag, Sparkles, Navigation, CheckCircle, ArrowRight, ExternalLink } from 'lucide-react';
+import { User, Phone, MapPin, ShoppingBag, Sparkles, CheckCircle, ArrowRight, ExternalLink } from 'lucide-react';
 import HomeSidebar from '@/components/HomeSidebar';
 import { useCart } from '@/context/CartContext';
 import { recordSaleAndReduceStock } from '@/lib/firebaseSales';
@@ -15,31 +15,8 @@ export default function OrderPage() {
   const [locationAddress, setLocationAddress] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [orderSuccess, setOrderSuccess] = useState<string | null>(null);
+  const [whatsappUrlState, setWhatsappUrlState] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
-  // Get current GPS location
-  const handleGetLocation = () => {
-    if (!navigator.geolocation) {
-      alert('Geolocation is not supported by your browser');
-      return;
-    }
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const lat = position.coords.latitude;
-        const lng = position.coords.longitude;
-        setLocationAddress(`Lat: ${lat.toFixed(4)}, Lng: ${lng.toFixed(4)}`);
-      },
-      (error) => {
-        console.error('Error getting location:', error);
-        alert('Unable to retrieve your location. Please type it manually.');
-      }
-    );
-  };
-
-  // Google Maps Navigation URL generator
-  const googleMapsSearchUrl = locationAddress
-    ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(locationAddress)}`
-    : `https://www.google.com/maps`;
 
   const handleSubmitOrder = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -75,6 +52,19 @@ export default function OrderPage() {
         grandTotal
       );
 
+      // Send process and order information to WhatsApp
+      const itemsText = cart.map(item => `- ${item.product.name} (Qty: ${item.quantity}) @ $${item.product.price.toFixed(2)}`).join('\n');
+      const whatsappMessage = `*New Customer Order* 🐝\n\n*Order ID:* ${orderId}\n*Customer Name:* ${fullName}\n*Phone:* ${phone}\n*Delivery Location:* ${locationAddress}\n\n*Items Ordered:*\n${itemsText}\n\n*Subtotal:* $${cartSubtotal.toFixed(2)}\n*Delivery Fee:* $${deliveryCost.toFixed(2)}\n*Grand Total:* $${grandTotal.toFixed(2)}\n\n*Process Status:* Order placed, recorded in database, and stock updated.`;
+
+      const whatsappUrl = `https://wa.me/96171725664?text=${encodeURIComponent(whatsappMessage)}`;
+      setWhatsappUrlState(whatsappUrl);
+      
+      try {
+        window.open(whatsappUrl, '_blank');
+      } catch (e) {
+        console.error('Popup blocked:', e);
+      }
+
       setOrderSuccess(orderId);
       clearCart();
     } catch (err: any) {
@@ -91,25 +81,25 @@ export default function OrderPage() {
       <HomeSidebar />
 
       {/* Main Content Area */}
-      <div className="flex-1 min-w-0 flex flex-col">
+      <div className="flex-1 min-w-0 flex flex-col justify-start">
         {/* Header Banner */}
-        <section className="bg-gradient-to-b from-amber-50/70 via-[#FFFDF9] to-[#FFFDF9] py-10 lg:py-14 px-4 sm:px-6 lg:px-8 border-b border-amber-900/15">
+        <section className="bg-gradient-to-b from-amber-50/70 via-[#FFFDF9] to-[#FFFDF9] py-6 lg:py-8 px-4 sm:px-6 lg:px-8 border-b border-amber-900/15">
           <div className="max-w-3xl mx-auto text-center">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100/80 border border-amber-200 text-amber-800 text-xs font-semibold tracking-wide uppercase mb-3 shadow-xs">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100/80 border border-amber-200 text-amber-800 text-xs font-semibold tracking-wide uppercase mb-2 shadow-xs">
               <Sparkles className="w-3.5 h-3.5 text-amber-600" />
               Customer Profile & Order
             </div>
-            <h1 className="text-3xl sm:text-4xl font-serif font-extrabold tracking-tight text-amber-950 mb-3">
+            <h1 className="text-2xl sm:text-3xl font-serif font-extrabold tracking-tight text-amber-950 mb-2">
               Complete Your <span className="italic font-normal text-amber-600">Order Profile</span>
             </h1>
-            <p className="text-sm sm:text-base text-amber-950/80 max-w-xl mx-auto leading-relaxed">
-              Verify your customer details, review ordered items, and specify your precise delivery location with live Google Maps navigation support.
+            <p className="text-xs sm:text-sm text-amber-950/80 max-w-xl mx-auto leading-relaxed">
+              Verify your customer details, review ordered items, and specify your delivery location.
             </p>
           </div>
         </section>
 
         {/* Form & Content Section */}
-        <section className="py-10 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto w-full">
+        <section className="py-6 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto w-full">
           {orderSuccess ? (
             <div className="bg-white rounded-3xl p-8 sm:p-12 border border-amber-200 shadow-xl text-center space-y-6">
               <div className="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-inner">
@@ -122,21 +112,30 @@ export default function OrderPage() {
                 Thank you, <span className="font-semibold text-amber-950">{fullName}</span>. Your order (<span className="font-mono font-bold text-amber-700">{orderSuccess}</span>) has been recorded and our delivery team is preparing your artisanal honey.
               </p>
 
+              {whatsappUrlState && (
+                <div className="p-5 bg-emerald-50 rounded-2xl border border-emerald-200 inline-flex flex-col items-center gap-3 max-w-md mx-auto w-full shadow-sm">
+                  <div className="flex items-center gap-2 text-xs font-bold text-emerald-900">
+                    <CheckCircle className="w-4 h-4 text-emerald-600" />
+                    <span>Send Order to WhatsApp (+961 71 725 664)</span>
+                  </div>
+                  <a
+                    href={whatsappUrlState}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-bold transition-all shadow-md w-full justify-center"
+                  >
+                    <span>Open WhatsApp Now</span>
+                    <ExternalLink className="w-4 h-4" />
+                  </a>
+                </div>
+              )}
+
               {locationAddress && (
                 <div className="p-4 bg-amber-50/70 rounded-2xl border border-amber-200 inline-flex flex-col items-center gap-2 max-w-md mx-auto w-full">
                   <div className="flex items-center gap-2 text-xs font-semibold text-amber-900">
                     <MapPin className="w-4 h-4 text-amber-700" />
                     Delivery Location: {locationAddress}
                   </div>
-                  <a
-                    href={googleMapsSearchUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-semibold transition-all shadow-sm"
-                  >
-                    <span>Navigate with Google Maps</span>
-                    <ExternalLink className="w-3.5 h-3.5" />
-                  </a>
                 </div>
               )}
 
@@ -234,23 +233,13 @@ export default function OrderPage() {
                     </div>
                   </div>
 
-                  {/* Write Location with Google Maps Navigation */}
+                  {/* Delivery Location */}
                   <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <label className="block text-xs font-bold text-amber-900 uppercase tracking-wider">
-                        Delivery Location & Google Maps Navigation *
-                      </label>
-                      <button
-                        type="button"
-                        onClick={handleGetLocation}
-                        className="text-xs font-semibold text-amber-700 hover:text-amber-900 underline flex items-center gap-1"
-                      >
-                        <Navigation className="w-3.5 h-3.5" />
-                        Use My Current GPS
-                      </button>
-                    </div>
+                    <label className="block text-xs font-bold text-amber-900 uppercase tracking-wider mb-2">
+                      Delivery Address / Location *
+                    </label>
 
-                    <div className="relative mb-3">
+                    <div className="relative">
                       <div className="absolute top-3.5 left-3.5 flex items-center pointer-events-none text-amber-700/60">
                         <MapPin className="w-4 h-4" />
                       </div>
@@ -263,24 +252,6 @@ export default function OrderPage() {
                         className="w-full pl-10 pr-4 py-3 bg-[#FFFDF9] border border-amber-200 rounded-2xl text-amber-950 placeholder:text-amber-900/40 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/50 transition-all resize-none"
                       />
                     </div>
-
-                    {/* Google Maps Link / Preview button */}
-                    {locationAddress && (
-                      <div className="flex items-center justify-between p-3 bg-amber-50 rounded-2xl border border-amber-200">
-                        <span className="text-xs text-amber-900 font-medium truncate max-w-[240px]">
-                          Map: {locationAddress}
-                        </span>
-                        <a
-                          href={googleMapsSearchUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1 text-xs font-bold text-amber-700 hover:text-amber-900 bg-white px-3 py-1.5 rounded-xl border border-amber-200 shadow-xs"
-                        >
-                          <span>Open Google Maps</span>
-                          <ExternalLink className="w-3.5 h-3.5" />
-                        </a>
-                      </div>
-                    )}
                   </div>
 
                   {/* Submit Button */}

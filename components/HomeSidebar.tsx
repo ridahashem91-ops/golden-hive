@@ -79,66 +79,63 @@ export default function HomeSidebar() {
       )}
 
       {/* Desktop Left Sidebar */}
-      <aside className="hidden lg:flex flex-col w-64 shrink-0 bg-[#FFFDF9] border-r border-amber-900/10 p-6 sticky top-0 h-screen overflow-y-auto justify-between">
-        <div className="space-y-8">
+      <aside className="hidden lg:flex flex-col w-48 shrink-0 bg-[#FFFDF9] border-r border-amber-900/15 p-3.5 sticky top-0 h-screen overflow-y-auto justify-between">
+        <div className="space-y-6">
           {/* Brand Logo */}
-          <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-amber-600/20 group-hover:scale-105 transition-transform border border-amber-400/30">
+          <Link href="/" className="flex items-center gap-2.5 group">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center text-white font-bold text-lg shadow-md group-hover:scale-105 transition-transform border border-amber-400/30">
               🐝
             </div>
-            <div className="flex flex-col">
-              <span className="font-serif font-bold text-xl text-amber-950 tracking-tight leading-none">Golden Hive</span>
-              <span className="text-[10px] font-semibold text-amber-700 tracking-widest uppercase mt-0.5">Artisanal Honey Co.</span>
+            <div className="flex flex-col min-w-0">
+              <span className="font-serif font-bold text-base text-amber-950 tracking-tight leading-tight truncate">Golden Hive</span>
+              <span className="text-[9px] font-semibold text-amber-700 tracking-wider uppercase">Artisanal Honey</span>
             </div>
           </Link>
 
           {/* Vertical Navigation (Home with Cart icon under it) */}
-          <nav className="space-y-3">
-            <div className="text-[11px] font-bold text-amber-800/50 uppercase tracking-wider px-3 mb-2">
-              Navigation
-            </div>
-            <div className="space-y-2">
+          <nav className="space-y-2.5">
+            <div className="space-y-1.5">
               <Link
                 href="/#home"
-                className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-semibold text-amber-950 hover:bg-amber-100/70 hover:text-amber-800 transition-all group"
+                className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-amber-950 hover:bg-amber-100/70 hover:text-amber-800 transition-all group"
               >
-                <HomeIcon className="w-4 h-4 text-amber-700 group-hover:scale-110 transition-transform" />
+                <HomeIcon className="w-3.5 h-3.5 text-amber-700 group-hover:scale-110 transition-transform" />
                 Home
+              </Link>
+              <Link
+                href="/order"
+                className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-amber-900/80 hover:bg-amber-100/70 hover:text-amber-800 transition-all group"
+              >
+                <User className="w-3.5 h-3.5 text-amber-700 group-hover:scale-110 transition-transform" />
+                Customer Order
               </Link>
               <button
                 onClick={() => setIsCartOpen(true)}
-                className="relative w-full px-4 py-3 rounded-xl bg-amber-100/70 hover:bg-amber-200/80 text-amber-900 transition-colors flex items-center justify-center gap-2 border border-amber-200 group"
+                className="relative flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-amber-950 hover:bg-amber-100/70 hover:text-amber-800 transition-all group w-full text-left"
                 aria-label="Shopping Cart"
               >
-                <ShoppingBag className="w-6 h-6 text-amber-800 group-hover:scale-110 transition-transform" />
-                <span className="text-xs font-semibold">Cart</span>
+                <ShoppingBag className="w-3.5 h-3.5 text-amber-700 group-hover:scale-110 transition-transform" />
+                <span>Cart</span>
                 {cartTotalCount > 0 && (
-                  <span className="absolute top-2.5 right-3 bg-amber-700 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-xs">
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 bg-amber-700 text-white text-[9px] font-bold w-3.5 h-3.5 rounded-full flex items-center justify-center shadow-xs">
                     {cartTotalCount}
                   </span>
                 )}
               </button>
             </div>
             <Link
-              href="/order"
-              className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-amber-900/80 hover:bg-amber-100/70 hover:text-amber-800 transition-all group"
-            >
-              <User className="w-4 h-4 text-amber-700 group-hover:scale-110 transition-transform" />
-              Customer Order
-            </Link>
-            <Link
               href="/contact"
-              className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-amber-900/80 hover:bg-amber-100/70 hover:text-amber-800 transition-all group"
+              className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-xs font-semibold text-amber-900/80 hover:bg-amber-100/70 hover:text-amber-800 transition-all group"
             >
-              <Mail className="w-4 h-4 text-amber-700 group-hover:scale-110 transition-transform" />
+              <Mail className="w-3.5 h-3.5 text-amber-700 group-hover:scale-110 transition-transform" />
               Contact Us
             </Link>
           </nav>
         </div>
 
         {/* Sidebar Footer */}
-        <div className="pt-6 border-t border-amber-900/10 space-y-4">
-          <div className="text-[11px] text-amber-900/60 text-center font-medium">
+        <div className="pt-4 border-t border-amber-900/10 space-y-2">
+          <div className="text-[10px] text-amber-900/60 text-center font-medium">
             © 2026 Golden Hive Co.
           </div>
         </div>

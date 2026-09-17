@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
-import { Search, SlidersHorizontal, ArrowUpDown, X, Sparkles, CheckCircle2, ArrowRight } from 'lucide-react';
+import { SlidersHorizontal, ArrowUpDown, Sparkles, CheckCircle2, ArrowRight } from 'lucide-react';
 import { Product, PRODUCTS } from '@/data/products';
 import ProductCard from '@/components/ProductCard';
 import Image from 'next/image';
@@ -12,7 +12,6 @@ interface ProductCatalogProps {
 }
 
 export default function ProductCatalog({ products = PRODUCTS }: ProductCatalogProps) {
-  const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<'featured' | 'price-low' | 'price-high' | 'rating'>('featured');
   const [inStockOnly, setInStockOnly] = useState(false);
@@ -26,23 +25,20 @@ export default function ProductCatalog({ products = PRODUCTS }: ProductCatalogPr
 
   const filteredProducts = useMemo(() => {
     return products.filter(product => {
-      const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                            product.description.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesCategory = !selectedCategory || product.category === selectedCategory;
       const matchesStock = inStockOnly ? product.inStock : true;
       const matchesPrice = product.price <= priceRange;
 
-      return matchesSearch && matchesCategory && matchesStock && matchesPrice;
+      return matchesCategory && matchesStock && matchesPrice;
     }).sort((a, b) => {
       if (sortBy === 'price-low') return a.price - b.price;
       if (sortBy === 'price-high') return b.price - a.price;
       if (sortBy === 'rating') return b.rating - a.rating;
       return (b.isFeatured ? 1 : 0) - (a.isFeatured ? 1 : 0);
     });
-  }, [products, searchQuery, selectedCategory, sortBy, inStockOnly, priceRange]);
+  }, [products, selectedCategory, sortBy, inStockOnly, priceRange]);
 
   const resetFilters = () => {
-    setSearchQuery('');
     setSelectedCategory(null);
     setSortBy('featured');
     setInStockOnly(false);
@@ -55,32 +51,12 @@ export default function ProductCatalog({ products = PRODUCTS }: ProductCatalogPr
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* 1. Left / Main Content Area */}
         <div className="lg:col-span-7 xl:col-span-8 space-y-8">
-          {/* Prominent Search Bar near top */}
           <div>
             <div className="max-w-3xl mb-6">
               <span className="text-amber-700 font-semibold text-xs tracking-widest uppercase mb-2 block">Find Your Favorite Nectar</span>
               <h2 className="text-3xl sm:text-4xl font-serif font-bold tracking-tight text-amber-950">
                 Artisanal Honey Catalog
               </h2>
-            </div>
-
-            <div className="relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-amber-700/60" />
-              <input
-                type="text"
-                placeholder="Search products by name in real time..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-12 pr-12 py-4 bg-white border-2 border-amber-900/15 rounded-2xl text-base text-amber-950 placeholder:text-amber-900/40 focus:outline-hidden focus:ring-4 focus:ring-amber-600/20 focus:border-amber-700 transition-all shadow-md"
-              />
-              {searchQuery && (
-                <button 
-                  onClick={() => setSearchQuery('')}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 p-1.5 rounded-full bg-amber-100 hover:bg-amber-200 text-amber-900 transition-colors"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              )}
             </div>
           </div>
 
@@ -154,7 +130,7 @@ export default function ProductCatalog({ products = PRODUCTS }: ProductCatalogPr
                 </select>
               </div>
 
-              {(selectedCategory !== null || searchQuery || inStockOnly || priceRange < 100) && (
+              {(selectedCategory !== null || inStockOnly || priceRange < 100) && (
                 <button
                   onClick={resetFilters}
                   className="text-xs font-semibold text-amber-700 hover:text-amber-900 underline underline-offset-4"
@@ -179,7 +155,7 @@ export default function ProductCatalog({ products = PRODUCTS }: ProductCatalogPr
               </div>
               <h3 className="text-lg font-serif font-bold text-amber-950 mb-1">No honeys found</h3>
               <p className="text-amber-900/75 text-sm max-w-sm mx-auto mb-6">
-                We couldn't find any honeys matching your search or filter criteria.
+                We couldn't find any honeys matching your filter criteria.
               </p>
               <button
                 onClick={resetFilters}
