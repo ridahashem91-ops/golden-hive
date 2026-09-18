@@ -5,9 +5,11 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { X, Trash2, ShoppingBag, Plus, Minus, ArrowRight, Sparkles } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
+import { useLanguage } from '@/context/LanguageContext';
 
 export default function CartDrawer() {
   const { cart, isCartOpen, setIsCartOpen, removeFromCart, updateQuantity, cartSubtotal, cartTotalCount } = useCart();
+  const { t } = useLanguage();
   const router = useRouter();
 
   const shippingFee = cartSubtotal >= 50 || cartSubtotal === 0 ? 0 : 8.99;
@@ -37,7 +39,7 @@ export default function CartDrawer() {
         <div className="flex items-center justify-between px-6 py-5 border-b border-amber-900/10 bg-white">
           <div className="flex items-center gap-2">
             <ShoppingBag className="w-5 h-5 text-amber-700" />
-            <h2 className="text-lg font-serif font-bold text-amber-950">Your Hive Cart</h2>
+            <h2 className="text-lg font-serif font-bold text-amber-950">{t('cart')}</h2>
             <span className="bg-amber-100 text-amber-800 text-xs font-semibold px-2 py-0.5 rounded-full">
               {cartTotalCount}
             </span>
@@ -45,6 +47,7 @@ export default function CartDrawer() {
           <button
             onClick={() => setIsCartOpen(false)}
             className="p-2 text-amber-900/50 hover:text-amber-950 rounded-xl hover:bg-amber-100 transition-colors"
+            aria-label={t('close')}
           >
             <X className="w-5 h-5" />
           </button>
@@ -80,7 +83,7 @@ export default function CartDrawer() {
               <div className="w-16 h-16 bg-amber-100 text-amber-700 rounded-full flex items-center justify-center mb-4">
                 <ShoppingBag className="w-8 h-8" />
               </div>
-              <h3 className="text-base font-serif font-bold text-amber-950 mb-1">Your hive cart is empty</h3>
+              <h3 className="text-base font-serif font-bold text-amber-950 mb-1">{t('emptyCart')}</h3>
               <p className="text-amber-900/70 text-sm max-w-xs mb-6">
                 Explore our collection of raw wildflower honey, manuka elixirs, and artisanal gift sets.
               </p>
@@ -88,7 +91,7 @@ export default function CartDrawer() {
                 onClick={() => setIsCartOpen(false)}
                 className="px-6 py-2.5 bg-amber-700 text-white text-sm font-medium rounded-xl hover:bg-amber-800 transition-colors shadow-sm"
               >
-                Explore Honey Collection
+                {t('exploreCollection')}
               </button>
             </div>
           ) : (
@@ -115,6 +118,7 @@ export default function CartDrawer() {
                       <button
                         onClick={() => removeFromCart(item.product.id)}
                         className="text-amber-900/40 hover:text-rose-600 transition-colors"
+                        aria-label={t('remove')}
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -152,7 +156,7 @@ export default function CartDrawer() {
           <div className="border-t border-amber-900/10 p-6 bg-white">
             <div className="space-y-2 mb-4 text-sm">
               <div className="flex justify-between text-amber-900/80">
-                <span>Subtotal</span>
+                <span>{t('subtotal')}</span>
                 <span className="font-semibold text-amber-950">${cartSubtotal.toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-amber-900/80">
@@ -166,7 +170,7 @@ export default function CartDrawer() {
                 <span className="font-semibold text-amber-950">${tax.toFixed(2)}</span>
               </div>
               <div className="pt-2 border-t border-amber-900/10 flex justify-between text-base font-bold text-amber-950 font-serif">
-                <span>Total</span>
+                <span>{t('total')}</span>
                 <span>${grandTotal.toFixed(2)}</span>
               </div>
             </div>
@@ -175,8 +179,8 @@ export default function CartDrawer() {
               onClick={handleProceedToOrder}
               className="w-full py-3.5 bg-amber-700 hover:bg-amber-800 text-white font-semibold rounded-xl shadow-md shadow-amber-700/20 transition-all flex items-center justify-center gap-2"
             >
-              Proceed to Customer Profile & Order
-              <ArrowRight className="w-4 h-4" />
+              {t('checkout')}
+              <ArrowRight className="w-4 h-4 rtl:rotate-180" />
             </button>
           </div>
         )}

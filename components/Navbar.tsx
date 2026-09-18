@@ -5,9 +5,12 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ShoppingBag, Search, Menu, X, Shield, Sparkles, Heart, ArrowRight } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
+import { useLanguage } from '@/context/LanguageContext';
+import LanguageSwitcher from '@/components/LanguageSwitcher';
 
 export default function Navbar() {
   const { cartTotalCount, setIsCartOpen } = useCart();
+  const { t } = useLanguage();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
 
@@ -25,34 +28,44 @@ export default function Navbar() {
               🐝
             </div>
             <div className="flex flex-col">
-              <span className="font-serif font-bold text-xl text-amber-950 tracking-tight leading-none">Golden Hive</span>
-              <span className="text-[10px] font-semibold text-amber-700 tracking-widest uppercase mt-0.5">Artisanal Honey Co.</span>
+              <span className="font-serif font-bold text-xl text-amber-950 tracking-tight leading-none">{t('brandName')}</span>
+              <span className="text-[10px] font-semibold text-amber-700 tracking-widest uppercase mt-0.5">{t('brandSubtitle')}</span>
             </div>
           </Link>
 
-          <div className="pl-3 border-l border-amber-900/10">
+          <div className="pl-3 border-l border-amber-900/10 hidden sm:flex items-center gap-4">
             <Link href="/#home" className="text-sm font-semibold text-amber-950 hover:text-amber-700 transition-colors">
-              Home
+              {t('home')}
+            </Link>
+            <Link href="/products" className="text-sm font-semibold text-amber-900/80 hover:text-amber-700 transition-colors">
+              {t('products')}
             </Link>
           </div>
         </div>
 
-        {/* Desktop Navigation Links (Customer Order, Contact Us), Cart Icon & Mobile Menu Button */}
-        <div className="flex items-center gap-4">
+        {/* Desktop Navigation Links, Language Switcher, Cart Icon & Mobile Menu Button */}
+        <div className="flex items-center gap-3 sm:gap-4">
           <nav className="hidden md:flex items-center gap-6">
             <Link href="/order" className="text-sm font-semibold text-amber-900/80 hover:text-amber-700 transition-colors">
-              Customer Order
+              {t('customerOrder')}
             </Link>
             <Link href="/contact" className="text-sm font-semibold text-amber-900/80 hover:text-amber-700 transition-colors">
-              Contact Us
+              {t('contactUs')}
+            </Link>
+            <Link href="/feedback" className="text-sm font-semibold text-amber-900/80 hover:text-amber-700 transition-colors">
+              {t('feedbackRates')}
             </Link>
           </nav>
+
+          <div className="hidden lg:block">
+            <LanguageSwitcher />
+          </div>
 
           {/* Cart Icon */}
           <button
             onClick={() => setIsCartOpen(true)}
             className="relative p-2 rounded-xl bg-amber-100/70 hover:bg-amber-200/80 text-amber-900 transition-colors flex items-center justify-center border border-amber-200 group"
-            aria-label="Shopping Cart"
+            aria-label={t('cart')}
           >
             <ShoppingBag className="w-4 h-4 text-amber-800 group-hover:scale-110 transition-transform" />
             {cartTotalCount > 0 && (
@@ -76,33 +89,43 @@ export default function Navbar() {
       {/* Mobile Menu Dropdown */}
       {mobileMenuOpen && (
         <div className="md:hidden bg-[#FFFDF9] border-b border-amber-900/10 px-6 py-6 space-y-4 shadow-xl">
+          <div className="py-2 flex justify-center">
+            <LanguageSwitcher />
+          </div>
           <Link 
             href="/#home" 
             onClick={() => setMobileMenuOpen(false)}
             className="block text-base font-semibold text-amber-950 hover:text-amber-700"
           >
-            Home
+            {t('home')}
+          </Link>
+          <Link 
+            href="/products" 
+            onClick={() => setMobileMenuOpen(false)}
+            className="block text-base font-semibold text-amber-900/80 hover:text-amber-700"
+          >
+            {t('products')}
           </Link>
           <Link 
             href="/order" 
             onClick={() => setMobileMenuOpen(false)}
             className="block text-base font-semibold text-amber-900/80 hover:text-amber-700"
           >
-            Customer Order
+            {t('customerOrder')}
           </Link>
           <Link 
             href="/contact" 
             onClick={() => setMobileMenuOpen(false)}
             className="block text-base font-semibold text-amber-900/80 hover:text-amber-700"
           >
-            Contact Us
+            {t('contactUs')}
           </Link>
           <Link 
-            href="/contact" 
+            href="/feedback" 
             onClick={() => setMobileMenuOpen(false)}
             className="block text-base font-semibold text-amber-900/80 hover:text-amber-700"
           >
-            Contact Us
+            {t('feedbackRates')}
           </Link>
         </div>
       )}
