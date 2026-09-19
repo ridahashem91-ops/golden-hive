@@ -5,10 +5,12 @@ import Link from 'next/link';
 import { User, Phone, MapPin, ShoppingBag, Sparkles, CheckCircle, ArrowRight, ExternalLink } from 'lucide-react';
 import HomeSidebar from '@/components/HomeSidebar';
 import { useCart } from '@/context/CartContext';
+import { useLanguage } from '@/context/LanguageContext';
 import { recordSaleAndReduceStock } from '@/lib/firebaseSales';
 
 export default function OrderPage() {
   const { cart, cartTotalCount, cartSubtotal, clearCart } = useCart();
+  const { t } = useLanguage();
   
   const [fullName, setFullName] = useState('');
   const [phone, setPhone] = useState('');
@@ -87,13 +89,13 @@ export default function OrderPage() {
           <div className="max-w-3xl mx-auto text-center">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100/80 border border-amber-200 text-amber-800 text-xs font-semibold tracking-wide uppercase mb-2 shadow-xs">
               <Sparkles className="w-3.5 h-3.5 text-amber-600" />
-              Customer Profile & Order
+              {t('customerProfileOrder')}
             </div>
             <h1 className="text-2xl sm:text-3xl font-serif font-extrabold tracking-tight text-amber-950 mb-2">
-              Complete Your <span className="italic font-normal text-amber-600">Order Profile</span>
+              {t('completeYourOrderProfile')}
             </h1>
             <p className="text-xs sm:text-sm text-amber-950/80 max-w-xl mx-auto leading-relaxed">
-              Verify your customer details, review ordered items, and specify your delivery location.
+              {t('orderProfileDesc')}
             </p>
           </div>
         </section>
@@ -106,10 +108,10 @@ export default function OrderPage() {
                 <CheckCircle className="w-10 h-10" />
               </div>
               <h2 className="text-2xl sm:text-3xl font-serif font-bold text-amber-950">
-                Order Placed Successfully!
+                {t('orderSuccessTitle')}
               </h2>
               <p className="text-amber-900/80 max-w-md mx-auto text-sm sm:text-base">
-                Thank you, <span className="font-semibold text-amber-950">{fullName}</span>. Your order (<span className="font-mono font-bold text-amber-700">{orderSuccess}</span>) has been recorded and our delivery team is preparing your artisanal honey.
+                {t('orderSuccessMessage')} <span className="font-semibold text-amber-950">{fullName}</span>. Your order (<span className="font-mono font-bold text-amber-700">{orderSuccess}</span>).
               </p>
 
               {whatsappUrlState && (
@@ -144,7 +146,7 @@ export default function OrderPage() {
                   href="/"
                   className="px-6 py-3 bg-amber-900 hover:bg-amber-950 text-white font-semibold rounded-2xl text-sm transition-all shadow-md"
                 >
-                  Return to Home
+                  {t('returnToHome')}
                 </Link>
                 <button
                   onClick={() => {
@@ -155,7 +157,7 @@ export default function OrderPage() {
                   }}
                   className="px-6 py-3 bg-amber-100 hover:bg-amber-200 text-amber-900 font-semibold rounded-2xl text-sm transition-all"
                 >
-                  Place Another Order
+                  {t('placeAnotherOrder')}
                 </button>
               </div>
             </div>
@@ -165,7 +167,7 @@ export default function OrderPage() {
               <div className="lg:col-span-2 bg-white rounded-3xl p-6 sm:p-8 border border-amber-200/80 shadow-lg shadow-amber-900/5">
                 <h2 className="text-xl font-serif font-bold text-amber-950 mb-6 pb-4 border-b border-amber-900/10 flex items-center gap-2.5">
                   <User className="w-5 h-5 text-amber-700" />
-                  Customer Profile & Delivery
+                  {t('customerProfileOrder')}
                 </h2>
 
                 {errorMessage && (
@@ -178,7 +180,7 @@ export default function OrderPage() {
                   {/* Full Name */}
                   <div>
                     <label className="block text-xs font-bold text-amber-900 uppercase tracking-wider mb-2">
-                      Full Name *
+                      {t('fullName')}
                     </label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-amber-700/60">
@@ -198,7 +200,7 @@ export default function OrderPage() {
                   {/* Phone Number */}
                   <div>
                     <label className="block text-xs font-bold text-amber-900 uppercase tracking-wider mb-2">
-                      Phone Number *
+                      {t('phone')}
                     </label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-amber-700/60">
@@ -218,7 +220,7 @@ export default function OrderPage() {
                   {/* Number of Items (Display/Info) */}
                   <div>
                     <label className="block text-xs font-bold text-amber-900 uppercase tracking-wider mb-2">
-                      Number of Items in Order
+                      {t('numberOfItems')}
                     </label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-amber-700/60">
@@ -236,7 +238,7 @@ export default function OrderPage() {
                   {/* Delivery Location */}
                   <div>
                     <label className="block text-xs font-bold text-amber-900 uppercase tracking-wider mb-2">
-                      Delivery Address / Location *
+                      {t('deliveryAddressLocation')}
                     </label>
 
                     <div className="relative">
@@ -264,7 +266,7 @@ export default function OrderPage() {
                       <span>Processing Order...</span>
                     ) : (
                       <>
-                        <span>Submit Profile & Order (${(cartSubtotal + 5.0).toFixed(2)})</span>
+                        <span>{t('submitProfileOrder')} (${(cartSubtotal + 5.0).toFixed(2)})</span>
                         <ArrowRight className="w-4 h-4" />
                       </>
                     )}
@@ -276,7 +278,7 @@ export default function OrderPage() {
               <div className="bg-amber-50/50 rounded-3xl p-6 sm:p-8 border border-amber-200/80 shadow-sm flex flex-col justify-between">
                 <div>
                   <h3 className="text-lg font-serif font-bold text-amber-950 mb-4 pb-3 border-b border-amber-900/10 flex items-center justify-between">
-                    <span>Order Summary</span>
+                    <span>{t('orderSummary')}</span>
                     <span className="text-xs font-semibold px-2.5 py-1 bg-amber-200/60 rounded-full text-amber-900">
                       {cartTotalCount} items
                     </span>
@@ -284,7 +286,7 @@ export default function OrderPage() {
 
                   {cart.length === 0 ? (
                     <div className="text-center py-8 text-amber-900/60 text-sm">
-                      Your cart is empty. <Link href="/" className="text-amber-700 underline font-semibold">Browse products</Link>
+                      {t('emptyCart')}. <Link href="/" className="text-amber-700 underline font-semibold">Browse products</Link>
                     </div>
                   ) : (
                     <div className="space-y-4 mb-6 max-h-72 overflow-y-auto pr-1">
@@ -310,15 +312,15 @@ export default function OrderPage() {
 
                 <div className="space-y-2 pt-4 border-t border-amber-900/10 text-xs sm:text-sm">
                   <div className="flex justify-between text-amber-900/80">
-                    <span>Subtotal</span>
+                    <span>{t('subtotal')}</span>
                     <span className="font-semibold text-amber-950">${cartSubtotal.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between text-amber-900/80">
-                    <span>Standard Delivery</span>
+                    <span>{t('standardDelivery')}</span>
                     <span className="font-semibold text-amber-950">$5.00</span>
                   </div>
                   <div className="flex justify-between text-base font-bold text-amber-950 pt-2 border-t border-amber-900/10">
-                    <span>Grand Total</span>
+                    <span>{t('grandTotal')}</span>
                     <span className="text-amber-700">${(cartSubtotal + (cart.length > 0 ? 5.0 : 0)).toFixed(2)}</span>
                   </div>
                 </div>

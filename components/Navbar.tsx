@@ -1,12 +1,12 @@
 'use client';
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ShoppingBag, Search, Menu, X, Shield, Sparkles, Heart, ArrowRight } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { useLanguage } from '@/context/LanguageContext';
-import LanguageSwitcher from '@/components/LanguageSwitcher';
 
 export default function Navbar() {
   const { cartTotalCount, setIsCartOpen } = useCart();
@@ -24,8 +24,8 @@ export default function Navbar() {
         {/* Brand Logo and Home Link */}
         <div className="flex items-center gap-4 sm:gap-6">
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-amber-600/20 group-hover:scale-105 transition-transform border border-amber-400/30">
-              🐝
+            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-amber-100 flex items-center justify-center shadow-lg shadow-amber-600/20 group-hover:scale-105 transition-transform border border-amber-400/30 overflow-hidden relative">
+              <Image src="/logo.jpg" alt="Propolis.lb Logo" fill className="object-cover" />
             </div>
             <div className="flex flex-col">
               <span className="font-serif font-bold text-xl text-amber-950 tracking-tight leading-none">{t('brandName')}</span>
@@ -43,7 +43,7 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* Desktop Navigation Links, Language Switcher, Cart Icon & Mobile Menu Button */}
+        {/* Desktop Navigation Links, Cart Icon & Mobile Menu Button */}
         <div className="flex items-center gap-3 sm:gap-4">
           <nav className="hidden md:flex items-center gap-6">
             <Link href="/order" className="text-sm font-semibold text-amber-900/80 hover:text-amber-700 transition-colors">
@@ -56,10 +56,6 @@ export default function Navbar() {
               {t('feedbackRates')}
             </Link>
           </nav>
-
-          <div className="hidden lg:block">
-            <LanguageSwitcher />
-          </div>
 
           {/* Cart Icon */}
           <button
@@ -89,9 +85,6 @@ export default function Navbar() {
       {/* Mobile Menu Dropdown */}
       {mobileMenuOpen && (
         <div className="md:hidden bg-[#FFFDF9] border-b border-amber-900/10 px-6 py-6 space-y-4 shadow-xl">
-          <div className="py-2 flex justify-center">
-            <LanguageSwitcher />
-          </div>
           <Link 
             href="/#home" 
             onClick={() => setMobileMenuOpen(false)}

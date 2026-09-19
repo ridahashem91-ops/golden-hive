@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { Home as HomeIcon, Mail, ShoppingBag, Menu, X, Sparkles, User, MessageSquare, Package } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
@@ -18,8 +19,8 @@ export default function HomeSidebar() {
       <header className="lg:hidden sticky top-0 z-40 bg-[#FFFDF9]/95 backdrop-blur-md border-b border-amber-900/10 px-4 py-3 flex items-center justify-between shadow-xs">
         <div className="flex items-center gap-3">
           <Link href="/" className="flex items-center gap-2 group">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center text-white font-bold text-base shadow-md">
-              🐝
+            <div className="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center shadow-md overflow-hidden relative">
+              <Image src="/logo.jpg" alt="Propolis.lb Logo" fill className="object-cover" />
             </div>
             <span className="font-serif font-bold text-lg text-amber-950">{t('brandName')}</span>
           </Link>
@@ -35,10 +36,6 @@ export default function HomeSidebar() {
         </div>
 
         <div className="flex items-center gap-2">
-          <div className="scale-90">
-            <LanguageSwitcher />
-          </div>
-
           {/* Cart Icon */}
           <button
             onClick={() => setIsCartOpen(true)}
@@ -66,7 +63,7 @@ export default function HomeSidebar() {
       {/* Mobile Dropdown Menu */}
       {mobileMenuOpen && (
         <div className="lg:hidden fixed inset-x-0 top-[61px] z-50 bg-[#FFFDF9] border-b border-amber-900/10 px-6 py-5 space-y-4 shadow-xl">
-          <div className="py-2 flex justify-center">
+          <div className="py-2 border-b border-amber-900/10 pb-4">
             <LanguageSwitcher />
           </div>
           <Link
@@ -134,8 +131,8 @@ export default function HomeSidebar() {
         <div className="space-y-6">
           {/* Brand Logo */}
           <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center text-white font-bold text-lg shadow-md group-hover:scale-105 transition-transform border border-amber-400/30">
-              🐝
+            <div className="w-14 h-14 rounded-2xl bg-amber-100 flex items-center justify-center shadow-md group-hover:scale-105 transition-transform border border-amber-400/30 overflow-hidden relative">
+              <Image src="/logo.jpg" alt="Propolis.lb Logo" fill className="object-cover" />
             </div>
             <div className="flex flex-col min-w-0">
               <span className="font-serif font-bold text-base text-amber-950 tracking-tight leading-tight truncate">{t('brandName')}</span>
@@ -143,12 +140,12 @@ export default function HomeSidebar() {
             </div>
           </Link>
 
-          {/* Language Switcher in Sidebar */}
-          <div className="px-1">
+          {/* Language Button Above the Pages Navigation */}
+          <div className="px-0.5">
             <LanguageSwitcher />
           </div>
 
-          {/* Vertical Navigation */}
+          {/* Vertical Navigation (Pages Buttons) */}
           <nav className="space-y-2.5">
             <div className="space-y-1.5">
               <Link

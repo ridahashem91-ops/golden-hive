@@ -4,6 +4,8 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { Star, MessageSquare, Sparkles } from 'lucide-react';
 import { PRODUCTS } from '@/data/products';
+import { useLanguage } from '@/context/LanguageContext';
+import { translateProduct } from '@/lib/dictionary';
 
 export interface FeedbackItem {
   id: string;
@@ -66,6 +68,7 @@ export function saveStoredFeedbacks(items: FeedbackItem[]) {
 }
 
 export default function FeedbackSection() {
+  const { t, language } = useLanguage();
   const [feedbacks, setFeedbacks] = useState<FeedbackItem[]>(INITIAL_FEEDBACKS);
 
   useEffect(() => {
@@ -92,24 +95,52 @@ export default function FeedbackSection() {
         <div>
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100/80 border border-amber-200 text-amber-800 text-xs font-semibold tracking-wide uppercase mb-1.5 shadow-xs">
             <Sparkles className="w-3.5 h-3.5 text-amber-600" />
-            <span>Customer Feedback Observer</span>
+            <span>{t('customerFeedbackObserver')}</span>
           </div>
           <h2 className="text-2xl sm:text-3xl font-serif font-bold text-amber-950">
-            What Our Customers Say
+            {t('whatOurCustomersSay')}
           </h2>
           <p className="text-xs sm:text-sm text-amber-900/70">
-            Read real reviews and feedback from honey lovers with product pictures.
+            {t('feedbackObserverDesc')}
           </p>
         </div>
         <div className="px-4 py-2 bg-amber-100/70 rounded-2xl border border-amber-200 text-amber-900 font-semibold text-xs flex items-center gap-2">
           <MessageSquare className="w-4 h-4 text-amber-700" />
-          <span>{feedbacks.length} Verified Reviews</span>
+          <span>{feedbacks.length} {t('verifiedReviews')}</span>
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {feedbacks.map((fb) => {
           const productImg = fb.productImage || 'https://images.unsplash.com/photo-1587049352847-4a222e784d38?auto=format&fit=crop&q=80&w=800';
+          
+          let productName = fb.productName;
+          let reviewerName = fb.reviewerName;
+          let comment = fb.comment;
+          let createdAt = fb.createdAt;
+
+          if (fb.id === 'fb-init-1') {
+            const product = PRODUCTS.find(p => p.id === fb.productId) || PRODUCTS[0];
+            if (product) productName = translateProduct(product, language).name;
+            if (language === 'ar') {
+              reviewerName = 'ليلى ك.';
+              comment = 'ذهب سائل مطلق! رائحة الزهور مذهلة ووصل طازجاً.';
+              createdAt = 'الآن';
+            }
+          } else if (fb.id === 'fb-init-2') {
+            const product = PRODUCTS.find(p => p.id === fb.productId) || PRODUCTS[1];
+            if (product) productName = translateProduct(product, language).name;
+            if (language === 'ar') {
+              reviewerName = 'كريم م.';
+              comment = 'مانوكا عالي الجودة. زيادة ملحوظة في الصحة العامة والطاقة اليومية.';
+              createdAt = 'قبل دقيقة واحدة';
+            }
+          } else {
+            const product = PRODUCTS.find(p => p.id === fb.productId);
+            if (product) {
+              productName = translateProduct(product, language).name;
+            }
+          }
 
           return (
             <div
@@ -121,16 +152,16 @@ export default function FeedbackSection() {
                 <div className="relative w-full h-44 sm:h-48 rounded-2xl overflow-hidden mb-5 border border-amber-200/60 bg-amber-50 shadow-xs group/img">
                   <Image
                     src={productImg}
-                    alt={fb.productName}
+                    alt={productName}
                     fill
                     className="object-cover group-hover/img:scale-105 transition-transform duration-500"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-amber-950/80 via-amber-950/20 to-transparent flex flex-col justify-end p-4">
                     <span className="text-[10px] font-bold uppercase tracking-wider text-amber-300">
-                      Reviewed Product
+                      {t('reviewedProduct')}
                     </span>
-                    <h4 className="text-sm font-serif font-bold text-white drop-shadow-xs" title={fb.productName}>
-                      {fb.productName}
+                    <h4 className="text-sm font-serif font-bold text-white drop-shadow-xs" title={productName}>
+                      {productName}
                     </h4>
                   </div>
                 </div>
@@ -148,23 +179,23 @@ export default function FeedbackSection() {
                       />
                     ))}
                   </div>
-                  <span className="text-[10px] font-mono text-amber-900/55">{fb.createdAt}</span>
+                  <span className="text-[10px] font-mono text-amber-900/55">{createdAt}</span>
                 </div>
 
                 <p className="text-amber-950/90 text-xs sm:text-sm italic leading-relaxed mb-6">
-                  "{fb.comment}"
+                  "{comment}"
                 </p>
               </div>
 
               <div className="pt-4 border-t border-amber-900/10 flex items-center justify-between text-xs">
                 <div className="flex items-center gap-2">
                   <div className="w-7 h-7 rounded-full bg-amber-100 text-amber-800 font-bold flex items-center justify-center text-xs border border-amber-200">
-                    {fb.reviewerName.charAt(0)}
+                    {reviewerName.charAt(0)}
                   </div>
-                  <span className="font-bold text-amber-950">{fb.reviewerName}</span>
+                  <span className="font-bold text-amber-950">{reviewerName}</span>
                 </div>
                 <span className="text-[10px] text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full font-semibold border border-emerald-200">
-                  Verified Review
+                  {t('verifiedReview')}
                 </span>
               </div>
             </div>

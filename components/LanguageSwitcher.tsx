@@ -2,34 +2,23 @@
 
 import React from 'react';
 import { useLanguage } from '@/context/LanguageContext';
-import { Globe } from 'lucide-react';
+import { Languages } from 'lucide-react';
 
 export default function LanguageSwitcher() {
   const { language, setLanguage } = useLanguage();
 
+  const toggleLanguage = () => {
+    setLanguage(language === 'en' ? 'ar' : 'en');
+  };
+
   return (
-    <div className="flex items-center gap-1 bg-amber-100/70 border border-amber-200/80 rounded-xl p-1 text-xs font-semibold">
-      <Globe className="w-3.5 h-3.5 text-amber-800 ml-1" />
-      <button
-        onClick={() => setLanguage('en')}
-        className={`px-2.5 py-1 rounded-lg transition-all ${
-          language === 'en'
-            ? 'bg-amber-700 text-white shadow-sm'
-            : 'text-amber-900/80 hover:text-amber-950 hover:bg-amber-200/50'
-        }`}
-      >
-        English
-      </button>
-      <button
-        onClick={() => setLanguage('ar')}
-        className={`px-2.5 py-1 rounded-lg transition-all ${
-          language === 'ar'
-            ? 'bg-amber-700 text-white shadow-sm'
-            : 'text-amber-900/80 hover:text-amber-950 hover:bg-amber-200/50'
-        }`}
-      >
-        العربية
-      </button>
-    </div>
+    <button
+      onClick={toggleLanguage}
+      className="flex items-center gap-2 px-3 py-2.5 bg-amber-100/80 hover:bg-amber-200/80 border border-amber-200 rounded-xl text-xs font-bold text-amber-950 transition-all shadow-xs w-full justify-center group"
+      aria-label="Toggle Language"
+    >
+      <Languages className="w-4 h-4 text-amber-700 group-hover:scale-110 transition-transform" />
+      <span>{language === 'en' ? 'العربية (Arabic)' : 'English'}</span>
+    </button>
   );
 }

@@ -7,6 +7,8 @@ import { Star, Sparkles, MessageSquare, CheckCircle, Clock, ArrowRight, User } f
 import HomeSidebar from '@/components/HomeSidebar';
 import { PRODUCTS } from '@/data/products';
 import { FeedbackItem, getStoredFeedbacks, saveStoredFeedbacks } from '@/components/FeedbackSection';
+import { useLanguage } from '@/context/LanguageContext';
+import { translateProduct } from '@/lib/dictionary';
 
 interface PendingFeedback {
   id: string;
@@ -15,6 +17,7 @@ interface PendingFeedback {
 }
 
 export default function FeedbackPage() {
+  const { t, language } = useLanguage();
   const [selectedProductId, setSelectedProductId] = useState<string>(PRODUCTS[0]?.id || '');
   const [rating, setRating] = useState<number>(5);
   const [hoverRating, setHoverRating] = useState<number>(0);
@@ -127,13 +130,13 @@ export default function FeedbackPage() {
           <div className="max-w-3xl mx-auto text-center">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100/80 border border-amber-200 text-amber-800 text-xs font-semibold tracking-wide uppercase mb-2 shadow-xs">
               <Sparkles className="w-3.5 h-3.5 text-amber-600" />
-              <span>Customer Reviews & Feedback</span>
+              <span>{t('customerReviewsFeedback')}</span>
             </div>
             <h1 className="text-2xl sm:text-3xl lg:text-4xl font-serif font-extrabold tracking-tight text-amber-950 mb-2">
-              Rate & Review <span className="italic font-normal text-amber-600">Golden Hive Products</span>
+              {t('rateReviewTitle')}
             </h1>
             <p className="text-sm sm:text-base text-amber-950/80 max-w-2xl mx-auto leading-relaxed">
-              Share your experience with our artisanal honeys. Submitted feedbacks enter our 10-second delay processing queue before appearing live in the feedback observer at the bottom of the home and feedback pages.
+              {t('feedbackPageDesc')}
             </p>
           </div>
         </div>
@@ -143,7 +146,7 @@ export default function FeedbackPage() {
           <div className="bg-white rounded-3xl p-6 sm:p-10 border border-amber-200/80 shadow-xl shadow-amber-900/5 mb-12">
             <h2 className="text-xl font-serif font-bold text-amber-950 mb-6 pb-4 border-b border-amber-900/10 flex items-center gap-2.5">
               <MessageSquare className="w-5 h-5 text-amber-700" />
-              Submit Product Feedback & Rating
+              {t('submitProductFeedback')}
             </h2>
 
             {errorMessage && (
@@ -163,7 +166,7 @@ export default function FeedbackPage() {
               {/* Product Selection */}
               <div>
                 <label className="block text-xs font-bold text-amber-900 uppercase tracking-wider mb-2">
-                  Select Product *
+                  {t('selectProduct')}
                 </label>
                 <div className="space-y-4">
                   <select
@@ -171,39 +174,43 @@ export default function FeedbackPage() {
                     onChange={(e) => setSelectedProductId(e.target.value)}
                     className="w-full px-4 py-3 bg-[#FFFDF9] border border-amber-200 rounded-2xl text-amber-950 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/50 transition-all font-medium"
                   >
-                    {PRODUCTS.map((prod) => (
-                      <option key={prod.id} value={prod.id}>
-                        {prod.name} (${prod.price.toFixed(2)})
-                      </option>
-                    ))}
+                    {PRODUCTS.map((prod) => {
+                      const translatedProd = translateProduct(prod, language);
+                      return (
+                        <option key={prod.id} value={prod.id}>
+                          {translatedProd.name} (${translatedProd.price.toFixed(2)})
+                        </option>
+                      );
+                    })}
                   </select>
 
                   {/* Large Selected Product Preview Card */}
                   {(() => {
                     const selProd = PRODUCTS.find(p => p.id === selectedProductId);
                     if (!selProd) return null;
+                    const translatedSelProd = translateProduct(selProd, language);
                     return (
                       <div className="bg-amber-50/90 rounded-2xl p-4 sm:p-5 border border-amber-200 flex items-center gap-4 shadow-sm">
                         <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-xl overflow-hidden shrink-0 border border-amber-300 bg-white shadow-md">
                           <Image
-                            src={selProd.image}
-                            alt={selProd.name}
+                            src={translatedSelProd.image}
+                            alt={translatedSelProd.name}
                             fill
                             className="object-cover"
                           />
                         </div>
                         <div className="flex-1 min-w-0">
                           <span className="text-[11px] font-bold text-amber-700 uppercase tracking-wider block mb-1">
-                            Selected Product for Review
+                            {t('selectedProductForReview')}
                           </span>
                           <h4 className="text-sm sm:text-base font-serif font-bold text-amber-950 truncate mb-1">
-                            {selProd.name}
+                            {translatedSelProd.name}
                           </h4>
                           <p className="text-xs sm:text-sm font-semibold text-amber-800">
-                            ${selProd.price.toFixed(2)} {selProd.originalPrice && <span className="line-through text-amber-900/40 ml-1.5">${selProd.originalPrice.toFixed(2)}</span>}
+                            ${translatedSelProd.price.toFixed(2)} {translatedSelProd.originalPrice && <span className="line-through text-amber-900/40 ml-1.5">${translatedSelProd.originalPrice.toFixed(2)}</span>}
                           </p>
                           <p className="text-xs text-amber-900/70 mt-1 line-clamp-1">
-                            {selProd.description}
+                            {translatedSelProd.description}
                           </p>
                         </div>
                       </div>
@@ -215,7 +222,7 @@ export default function FeedbackPage() {
               {/* Rating Stars */}
               <div>
                 <label className="block text-xs font-bold text-amber-900 uppercase tracking-wider mb-2">
-                  Rating (1 to 5 Stars) *
+                  {t('ratingStars')}
                 </label>
                 <div className="flex items-center gap-2 py-2">
                   {[1, 2, 3, 4, 5].map((star) => (
@@ -245,7 +252,7 @@ export default function FeedbackPage() {
               {/* Reviewer Name */}
               <div>
                 <label className="block text-xs font-bold text-amber-900 uppercase tracking-wider mb-2">
-                  Your Name *
+                  {t('yourName')}
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-amber-700/60">
@@ -265,7 +272,7 @@ export default function FeedbackPage() {
               {/* Feedback Comment */}
               <div>
                 <label className="block text-xs font-bold text-amber-900 uppercase tracking-wider mb-2">
-                  Feedback & Comments *
+                  {t('feedbackComments')}
                 </label>
                 <textarea
                   rows={4}
@@ -282,7 +289,7 @@ export default function FeedbackPage() {
                 type="submit"
                 className="w-full py-4 px-6 bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white font-semibold rounded-2xl transition-all shadow-md shadow-amber-600/20 text-sm flex items-center justify-center gap-2"
               >
-                <span>Submit Feedback (10s Delay Queue)</span>
+                <span>{t('submitFeedbackQueue')}</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
             </form>
@@ -301,33 +308,39 @@ export default function FeedbackPage() {
                 Your submitted feedback is currently waiting in the 10-second delay queue before publishing to the bottom observer feed.
               </p>
               <div className="space-y-3">
-                {pendingQueue.map((pq) => (
-                  <div key={pq.id} className="bg-white rounded-2xl p-4 border border-amber-200 flex items-center justify-between shadow-xs gap-4">
-                    <div className="flex items-center gap-3 min-w-0">
-                      <div className="relative w-16 h-16 rounded-xl overflow-hidden shrink-0 border border-amber-200/60 bg-white shadow-xs">
-                        <Image
-                          src={pq.item.productImage || 'https://images.unsplash.com/photo-1587049352847-4a222e784d38?auto=format&fit=crop&q=80&w=800'}
-                          alt={pq.item.productName}
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
-                      <div className="min-w-0">
-                        <div className="flex items-center gap-2">
-                          <span className="font-semibold text-amber-950 text-xs sm:text-sm">{pq.item.reviewerName}</span>
-                          <span className="text-[11px] text-amber-700 bg-amber-100 px-2 py-0.5 rounded-md font-medium truncate max-w-[150px]">{pq.item.productName}</span>
+                {pendingQueue.map((pq) => {
+                  const product = PRODUCTS.find(p => p.id === pq.item.productId);
+                  const translatedPqProd = product ? translateProduct(product, language) : null;
+                  const pqProductName = translatedPqProd ? translatedPqProd.name : pq.item.productName;
+
+                  return (
+                    <div key={pq.id} className="bg-white rounded-2xl p-4 border border-amber-200 flex items-center justify-between shadow-xs gap-4">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="relative w-16 h-16 rounded-xl overflow-hidden shrink-0 border border-amber-200/60 bg-white shadow-xs">
+                          <Image
+                            src={pq.item.productImage || 'https://images.unsplash.com/photo-1587049352847-4a222e784d38?auto=format&fit=crop&q=80&w=800'}
+                            alt={pqProductName}
+                            fill
+                            className="object-cover"
+                          />
                         </div>
-                        <p className="text-xs text-amber-900/80 mt-1 italic truncate max-w-xs sm:max-w-md">"{pq.item.comment}"</p>
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-2">
+                            <span className="font-semibold text-amber-950 text-xs sm:text-sm">{pq.item.reviewerName}</span>
+                            <span className="text-[11px] text-amber-700 bg-amber-100 px-2 py-0.5 rounded-md font-medium truncate max-w-[150px]">{pqProductName}</span>
+                          </div>
+                          <p className="text-xs text-amber-900/80 mt-1 italic truncate max-w-xs sm:max-w-md">"{pq.item.comment}"</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 bg-amber-100/80 px-3 py-1.5 rounded-xl border border-amber-200 shrink-0">
+                        <Clock className="w-3.5 h-3.5 text-amber-700" />
+                        <span className="text-xs font-bold text-amber-900 font-mono">
+                          {pq.remainingSeconds}s remaining
+                        </span>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2 bg-amber-100/80 px-3 py-1.5 rounded-xl border border-amber-200 shrink-0">
-                      <Clock className="w-3.5 h-3.5 text-amber-700" />
-                      <span className="text-xs font-bold text-amber-900 font-mono">
-                        {pq.remainingSeconds}s remaining
-                      </span>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           )}
@@ -338,10 +351,10 @@ export default function FeedbackPage() {
               <div>
                 <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100/80 border border-amber-200 text-amber-800 text-xs font-semibold tracking-wide uppercase mb-1.5 shadow-xs">
                   <Sparkles className="w-3.5 h-3.5 text-amber-600" />
-                  <span>Live Observer Feed</span>
+                  <span>{t('liveObserverFeed')}</span>
                 </div>
                 <h2 className="text-xl sm:text-2xl font-serif font-bold text-amber-950">
-                  Customer Feedback Observer
+                  {t('customerFeedbackObserver')}
                 </h2>
                 <p className="text-xs sm:text-sm text-amber-900/70">
                   All verified and 10-second delayed feedbacks appear here with product pictures.
@@ -361,6 +374,29 @@ export default function FeedbackPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {feedbacks.map((fb) => {
                   const productImg = fb.productImage || 'https://images.unsplash.com/photo-1587049352847-4a222e784d38?auto=format&fit=crop&q=80&w=800';
+                  const product = PRODUCTS.find(p => p.id === fb.productId);
+                  let productName = fb.productName;
+                  let comment = fb.comment;
+                  let reviewerName = fb.reviewerName;
+                  let createdAt = fb.createdAt;
+
+                  if (product) {
+                    productName = translateProduct(product, language).name;
+                  } else if (fb.id === 'fb-init-1') {
+                    if (PRODUCTS[0]) productName = translateProduct(PRODUCTS[0], language).name;
+                    if (language === 'ar') {
+                      reviewerName = 'ليلى ك.';
+                      comment = 'ذهب سائل مطلق! رائحة الزهور مذهلة ووصل طازجاً.';
+                      createdAt = 'الآن';
+                    }
+                  } else if (fb.id === 'fb-init-2') {
+                    if (PRODUCTS[1]) productName = translateProduct(PRODUCTS[1], language).name;
+                    if (language === 'ar') {
+                      reviewerName = 'كريم م.';
+                      comment = 'مانوكا عالي الجودة. زيادة ملحوظة في الصحة العامة والطاقة اليومية.';
+                      createdAt = 'قبل دقيقة واحدة';
+                    }
+                  }
 
                   return (
                     <div
@@ -372,16 +408,16 @@ export default function FeedbackPage() {
                         <div className="relative w-full h-48 sm:h-52 rounded-2xl overflow-hidden mb-5 border border-amber-200/60 bg-amber-50 shadow-xs group/img">
                           <Image
                             src={productImg}
-                            alt={fb.productName}
+                            alt={productName}
                             fill
                             className="object-cover group-hover/img:scale-105 transition-transform duration-500"
                           />
                           <div className="absolute inset-0 bg-gradient-to-t from-amber-950/80 via-amber-950/20 to-transparent flex flex-col justify-end p-4">
                             <span className="text-[10px] font-bold uppercase tracking-wider text-amber-300">
-                              Reviewed Product
+                              {t('reviewedProduct')}
                             </span>
-                            <h4 className="text-sm sm:text-base font-serif font-bold text-white drop-shadow-xs" title={fb.productName}>
-                              {fb.productName}
+                            <h4 className="text-sm sm:text-base font-serif font-bold text-white drop-shadow-xs" title={productName}>
+                              {productName}
                             </h4>
                           </div>
                         </div>
@@ -399,23 +435,23 @@ export default function FeedbackPage() {
                               />
                             ))}
                           </div>
-                          <span className="text-[11px] font-mono text-amber-900/55">{fb.createdAt}</span>
+                          <span className="text-[11px] font-mono text-amber-900/55">{createdAt}</span>
                         </div>
 
                         <p className="text-amber-950/90 text-sm sm:text-base italic leading-relaxed mb-6">
-                          "{fb.comment}"
+                          "{comment}"
                         </p>
                       </div>
 
                       <div className="pt-4 border-t border-amber-900/10 flex items-center justify-between text-xs">
                         <div className="flex items-center gap-2">
                           <div className="w-7 h-7 rounded-full bg-amber-100 text-amber-800 font-bold flex items-center justify-center text-xs border border-amber-200">
-                            {fb.reviewerName.charAt(0)}
+                            {reviewerName.charAt(0)}
                           </div>
-                          <span className="font-bold text-amber-950">{fb.reviewerName}</span>
+                          <span className="font-bold text-amber-950">{reviewerName}</span>
                         </div>
                         <span className="text-[10px] text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full font-semibold border border-emerald-200">
-                          Verified Review
+                          {t('verifiedReview')}
                         </span>
                       </div>
                     </div>

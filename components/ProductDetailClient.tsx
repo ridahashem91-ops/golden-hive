@@ -17,6 +17,8 @@ import {
 } from 'lucide-react';
 import { Product } from '@/data/products';
 import { useCart } from '@/context/CartContext';
+import { useLanguage } from '@/context/LanguageContext';
+import { translateProduct } from '@/lib/dictionary';
 import ProductCard from '@/components/ProductCard';
 
 interface ProductDetailClientProps {
@@ -26,7 +28,11 @@ interface ProductDetailClientProps {
 
 export default function ProductDetailClient({ product, relatedProducts }: ProductDetailClientProps) {
   const { addToCart } = useCart();
-  const [selectedImage, setSelectedImage] = useState(product.images[0] || product.image);
+  const { language } = useLanguage();
+  const translatedProduct = translateProduct(product, language);
+  const translatedRelated = relatedProducts.map(p => translateProduct(p, language));
+
+  const [selectedImage, setSelectedImage] = useState(translatedProduct.images[0] || translatedProduct.image);
   const [quantity, setQuantity] = useState(1);
   const [selectedSize, setSelectedSize] = useState('250g Glass Jar');
   const [activeTab, setActiveTab] = useState<'description' | 'features' | 'shipping'>('description');
@@ -38,12 +44,12 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
     { name: '1kg Bulk Honeycomb Tin', priceOffset: 28 }
   ];
 
-  const currentPrice = product.price + (sizes.find(s => s.name === selectedSize)?.priceOffset || 0);
+  const currentPrice = translatedProduct.price + (sizes.find(s => s.name === selectedSize)?.priceOffset || 0);
 
   const handleAddToCart = () => {
     // Add custom modified product with selected size & adjusted price if needed
     const customizedProduct = {
-      ...product,
+      ...translatedProduct,
       price: currentPrice
     };
     addToCart(customizedProduct, quantity, undefined, selectedSize);
@@ -61,7 +67,7 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
             Back to Catalog
           </Link>
           <ChevronRight className="w-4 h-4 text-amber-700/40" />
-          <span className="text-amber-950 font-medium truncate">{product.name}</span>
+          <span className="text-amber-950 font-medium truncate">{translatedProduct.name}</span>
         </nav>
 
         {/* Main Product Section */}
@@ -71,22 +77,22 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
             <div className="relative aspect-square bg-amber-50 rounded-2xl overflow-hidden border border-amber-100">
               <Image
                 src={selectedImage}
-                alt={product.name}
+                alt={translatedProduct.name}
                 fill
                 priority
                 className="object-cover object-center transition-all duration-300"
               />
-              {product.originalPrice && (
+              {translatedProduct.originalPrice && (
                 <span className="absolute top-4 left-4 bg-amber-600 text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow-xs">
-                  Save ${(product.originalPrice - product.price).toFixed(2)}
+                  Save ${(translatedProduct.originalPrice - translatedProduct.price).toFixed(2)}
                 </span>
               )}
             </div>
 
             {/* Thumbnail selector */}
-            {product.images && product.images.length > 1 && (
+            {translatedProduct.images && translatedProduct.images.length > 1 && (
               <div className="grid grid-cols-4 gap-4">
-                {product.images.map((img, idx) => (
+                {translatedProduct.images.map((img, idx) => (
                   <button
                     key={idx}
                     onClick={() => setSelectedImage(img)}
@@ -104,11 +110,11 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
           {/* Product Info & Actions */}
           <div className="flex flex-col">
             <div className="text-xs font-semibold tracking-wider text-amber-700 uppercase mb-2">
-              {product.category}
+              {translatedProduct.category}
             </div>
 
             <h1 className="text-3xl sm:text-4xl font-serif font-bold tracking-tight text-amber-950 mb-3">
-              {product.name}
+              {translatedProduct.name}
             </h1>
 
             {/* Rating & Reviews */}
@@ -116,8 +122,8 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
               <div className="flex items-center text-amber-500">
                 <Star className="w-4 h-4 fill-current" />
               </div>
-              <span className="text-sm font-semibold text-amber-950">{product.rating}</span>
-              <span className="text-sm text-amber-950/50">({product.reviewsCount} customer reviews)</span>
+              <span className="text-sm font-semibold text-amber-950">{translatedProduct.rating}</span>
+              <span className="text-sm text-amber-950/50">({translatedProduct.reviewsCount} customer reviews)</span>
             </div>
 
             {/* Price */}
@@ -125,20 +131,20 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
               <span className="text-3xl font-extrabold text-amber-950 font-serif">
                 ${currentPrice.toFixed(2)}
               </span>
-              {product.originalPrice && (
+              {translatedProduct.originalPrice && (
                 <span className="text-lg text-amber-900/40 line-through">
-                  ${(product.originalPrice + (currentPrice - product.price)).toFixed(2)}
+                  ${(translatedProduct.originalPrice + (currentPrice - translatedProduct.price)).toFixed(2)}
                 </span>
               )}
               <span className={`ml-auto text-xs font-semibold px-3 py-1 rounded-full ${
-                product.inStock ? 'bg-amber-100 text-amber-800 border border-amber-200' : 'bg-rose-50 text-rose-700 border border-rose-200'
+                translatedProduct.inStock ? 'bg-amber-100 text-amber-800 border border-amber-200' : 'bg-rose-50 text-rose-700 border border-rose-200'
               }`}>
-                {product.inStock ? 'In Stock & Freshly Jarred' : 'Sold Out'}
+                {translatedProduct.inStock ? 'In Stock & Freshly Jarred' : 'Sold Out'}
               </span>
             </div>
 
             <p className="text-amber-900/80 text-sm leading-relaxed mb-6">
-              {product.description}
+              {translatedProduct.description}
             </p>
 
             {/* Size / Jar Selection */}
@@ -186,9 +192,9 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
 
               <button
                 onClick={handleAddToCart}
-                disabled={!product.inStock}
+                disabled={!translatedProduct.inStock}
                 className={`flex-1 flex items-center justify-center gap-2.5 py-4 px-8 rounded-xl font-semibold text-white transition-all shadow-md ${
-                  product.inStock
+                  translatedProduct.inStock
                     ? addedSuccessfully
                       ? 'bg-emerald-700 hover:bg-emerald-800'
                       : 'bg-amber-700 hover:bg-amber-800 shadow-amber-700/20 hover:shadow-lg'
@@ -203,7 +209,7 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
                 ) : (
                   <>
                     <ShoppingBag className="w-5 h-5" />
-                    {product.inStock ? 'Add to Cart' : 'Sold Out'}
+                    {translatedProduct.inStock ? 'Add to Cart' : 'Sold Out'}
                   </>
                 )}
               </button>
@@ -271,13 +277,13 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
           <div className="text-amber-950/80 text-sm leading-relaxed">
             {activeTab === 'description' && (
               <div>
-                <p className="mb-4">{product.description}</p>
+                <p className="mb-4">{translatedProduct.description}</p>
                 <p>Every jar of Golden Hive honey is carefully packed by hand in our temperature-controlled facility to preserve all natural pollen grains, active enzymes, and delicate aromatic compounds straight from the honeycomb.</p>
               </div>
             )}
             {activeTab === 'features' && (
               <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {product.features.map((feature, idx) => (
+                {translatedProduct.features.map((feature, idx) => (
                   <li key={idx} className="flex items-center gap-2.5 bg-amber-50/50 p-3.5 rounded-xl border border-amber-900/10">
                     <Check className="w-4 h-4 text-amber-700 shrink-0" />
                     <span className="text-amber-950 font-medium">{feature}</span>
@@ -299,7 +305,7 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
         </div>
 
         {/* Related Products */}
-        {relatedProducts.length > 0 && (
+        {translatedRelated.length > 0 && (
           <div>
             <div className="flex items-center justify-between mb-8">
               <h2 className="text-2xl font-serif font-bold tracking-tight text-amber-950">You Might Also Love</h2>
@@ -309,7 +315,7 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
               </Link>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {relatedProducts.map(relProduct => (
+              {translatedRelated.map(relProduct => (
                 <ProductCard key={relProduct.id} product={relProduct} />
               ))}
             </div>

@@ -6,7 +6,6 @@ import { LanguageProvider } from "@/context/LanguageContext";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CartDrawer from "@/components/CartDrawer";
-import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -21,6 +20,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Golden Hive | Artisanal Raw Honey",
   description: "Experience nature's purest liquid gold. Sustainably sourced from pristine wildflower meadows and remote organic apiaries.",
+  icons: {
+    icon: "/logo.jpg",
+  },
 };
 
 export default function RootLayout({
@@ -38,9 +40,6 @@ export default function RootLayout({
             {/* Promotional Delivery Bar */}
             <div className="bg-amber-800 text-amber-50 text-[11px] sm:text-xs py-1.5 px-3 text-center font-medium tracking-wide flex items-center justify-center gap-3 flex-wrap">
               <span>🍯 Free delivery on all orders over $50 • Use code <span className="underline font-bold text-amber-200">GOLDEN2026</span> for 10% off</span>
-              <div className="inline-block scale-90">
-                <LanguageSwitcher />
-              </div>
             </div>
             <Navbar />
             <main className="min-h-screen">

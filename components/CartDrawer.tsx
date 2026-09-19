@@ -6,10 +6,11 @@ import { useRouter } from 'next/navigation';
 import { X, Trash2, ShoppingBag, Plus, Minus, ArrowRight, Sparkles } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { useLanguage } from '@/context/LanguageContext';
+import { translateProduct } from '@/lib/dictionary';
 
 export default function CartDrawer() {
   const { cart, isCartOpen, setIsCartOpen, removeFromCart, updateQuantity, cartSubtotal, cartTotalCount } = useCart();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const router = useRouter();
 
   const shippingFee = cartSubtotal >= 50 || cartSubtotal === 0 ? 0 : 8.99;
@@ -40,8 +41,8 @@ export default function CartDrawer() {
           <div className="flex items-center gap-2">
             <ShoppingBag className="w-5 h-5 text-amber-700" />
             <h2 className="text-lg font-serif font-bold text-amber-950">{t('cart')}</h2>
-            <span className="bg-amber-100 text-amber-800 text-xs font-semibold px-2 py-0.5 rounded-full">
-              {cartTotalCount}
+            <span className="bg-amber-100 text-amber-800 text-xs font-semibold px-2 py-0.5 rounded-full" dir="ltr">
+              {cartTotalCount} {t('items')}
             </span>
           </div>
           <button
@@ -85,34 +86,37 @@ export default function CartDrawer() {
               </div>
               <h3 className="text-base font-serif font-bold text-amber-950 mb-1">{t('emptyCart')}</h3>
               <p className="text-amber-900/70 text-sm max-w-xs mb-6">
-                Explore our collection of raw wildflower honey, manuka elixirs, and artisanal gift sets.
+                {t('cartExploreDesc')}
               </p>
               <button
                 onClick={() => setIsCartOpen(false)}
                 className="px-6 py-2.5 bg-amber-700 text-white text-sm font-medium rounded-xl hover:bg-amber-800 transition-colors shadow-sm"
               >
-                {t('exploreCollection')}
+                {t('browseProducts')}
               </button>
             </div>
           ) : (
             <div className="space-y-4">
-              {cart.map((item, index) => (
-                <div key={`${item.product.id}-${index}`} className="flex gap-4 p-4 rounded-2xl bg-white border border-amber-900/10 shadow-xs">
-                  <div className="relative w-20 h-20 bg-amber-50 rounded-xl overflow-hidden shrink-0 border border-amber-100">
-                    <Image
-                      src={item.product.image}
-                      alt={item.product.name}
-                      fill
-                      className="object-cover object-center"
-                    />
-                  </div>
+              {cart.map((item, index) => {
+                const translatedProduct = translateProduct(item.product, language);
+                return (
+                  <div key={`${item.product.id}-${index}`} className="flex gap-4 p-4 rounded-2xl bg-white border border-amber-900/10 shadow-xs">
+                    <div className="relative w-20 h-20 bg-amber-50 rounded-xl overflow-hidden shrink-0 border border-amber-100">
+                      <Image
+                        src={translatedProduct.image}
+                        alt={translatedProduct.name}
+                        fill
+                        className="object-cover object-center"
+                      />
+                    </div>
 
-                  <div className="flex-1 flex flex-col justify-between">
-                    <div className="flex items-start justify-between gap-2">
-                      <div>
-                        <h4 className="font-serif font-semibold text-amber-950 text-sm line-clamp-1">{item.product.name}</h4>
-                        <div className="text-xs text-amber-800/70 mt-0.5 space-x-2">
-                          {item.selectedSize && <span>{item.selectedSize}</span>}
+                    <div className="flex-1 flex flex-col justify-between">
+                      <div className="flex items-start justify-between gap-2">
+                        <div>
+                          <h4 className="font-serif font-semibold text-amber-950 text-sm line-clamp-1">{translatedProduct.name}</h4>
+                          <div className="text-xs text-amber-800/70 mt-0.5 space-x-2">
+                            {item.selectedSize && <span>{item.selectedSize}</span>}
+                          </div>
                         </div>
                       </div>
                       <button
@@ -145,8 +149,8 @@ export default function CartDrawer() {
                       </span>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>
